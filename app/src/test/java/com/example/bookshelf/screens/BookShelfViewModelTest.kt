@@ -117,7 +117,7 @@ class FakeBooksRepository : BooksRepository(FakeBookApiService()) {
         return searchResults
     }
 
-    override suspend fun getBookDetails(bookId: String): BookItem? {
+    override suspend fun getBookDetails(bookId: String, apiKey: String): BookItem? {
         return bookDetails
     }
 }
@@ -149,7 +149,7 @@ class FakeFirestoreRepository : FirestoreRepository() {
 
 class FakeBookApiService : com.example.bookshelf.network.BookApiService {
     override suspend fun searchBooks(query: String, apiKey: String, userAgent: String) = com.example.bookshelf.network.BookSearchResponse(emptyList())
-    override suspend fun getBookDetails(bookId: String) = BookItem("", VolumeInfo(title = ""))
+    override suspend fun getBookDetails(bookId: String, apiKey: String) = BookItem("", VolumeInfo(title = ""))
     override suspend fun createBook(book: BookItem): BookItem {
         return book
     }

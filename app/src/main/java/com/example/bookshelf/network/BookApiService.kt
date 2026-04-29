@@ -25,11 +25,13 @@ interface BookApiService {
      * Fetches the details for a single book volume.
      *
      * @param bookId The unique ID of the book volume.
+     * @param apiKey The API key for authentication to avoid 429 (Too Many Requests) errors.
      * @return A [BookItem] containing detailed information about the book.
      */
     @GET("volumes/{id}")
     suspend fun getBookDetails(
-        @Path("id") bookId: String
+        @Path("id") bookId: String,
+        @Query("key") apiKey: String
     ): BookItem
 
     /**
@@ -64,7 +66,7 @@ interface BookApiService {
 
 @Serializable
 data class BookSearchResponse(
-    val items: List<BookItem>
+    val items: List<BookItem>? = null
 )
 
 @Serializable

@@ -28,6 +28,8 @@ class BookShelfViewModel(
     private val firestoreRepository: FirestoreRepository
 ) : ViewModel() {
 
+    private val apiKey = "AIzaSyD7ZpIeYG2YyeRlvelXRW7vrsjWimcRbbM"
+
     private val _searchResults = MutableStateFlow<List<BookItem>>(emptyList())
     val searchResults: StateFlow<List<BookItem>> = _searchResults.asStateFlow()
 
@@ -56,7 +58,7 @@ class BookShelfViewModel(
         viewModelScope.launch {
             _booksApiState.value = BooksApiState.Loading
             try {
-                _selectedBook.value = booksRepository.getBookDetails(bookId)
+                _selectedBook.value = booksRepository.getBookDetails(bookId, apiKey)
                 _booksApiState.value = BooksApiState.Success
             } catch (e: Exception) {
                 _booksApiState.value = BooksApiState.Error("Failed to fetch book details.")
@@ -93,7 +95,7 @@ class BookShelfViewModel(
         viewModelScope.launch {
             _booksApiState.value = BooksApiState.Loading
             try {
-                val result = booksRepository.searchBooks(query, "AIzaSyD7ZpIeYG2YyeRlvelXRW7vrsjWimcRbbM", "my-awesome-app/1.0")
+                val result = booksRepository.searchBooks(query, apiKey, "my-awesome-app/1.0")
                 _searchResults.value = result
                 _booksApiState.value = BooksApiState.Success
             } catch (e: IOException) {

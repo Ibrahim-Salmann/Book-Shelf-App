@@ -34,12 +34,13 @@ open class BooksRepository(
      * Fetches the details for a single book volume from the API.
      *
      * @param bookId The unique ID of the book volume to fetch.
+     * @param apiKey The API key for authentication.
      * @return A [BookItem] containing the book's details, or null if an error occurred.
      */
-    open suspend fun getBookDetails(bookId: String): BookItem? {
+    open suspend fun getBookDetails(bookId: String, apiKey: String): BookItem? {
         return try {
             Log.d(tag, "Fetching details for book ID: $bookId")
-            val book = apiService.getBookDetails(bookId)
+            val book = apiService.getBookDetails(bookId, apiKey)
             Log.d(tag, "Successfully fetched details for book: ${book.volumeInfo.title}")
             book
         } catch (e: IOException) {
@@ -48,6 +49,9 @@ open class BooksRepository(
             null
         } catch (e: HttpException) {
             // This indicates a non-successful HTTP response (e.g., 404 Not Found, 500 Server Error).
+            if (e.code() == 429) {
+                Log.e(tag, "HTTP 429: Too many requests. Please wait before trying again.")
+            }
             Log.e(tag, "HTTP error fetching book details for ID '$bookId': ${e.code()} ${e.message()}", e)
             null
         } catch (e: Exception) {
